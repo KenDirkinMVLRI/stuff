@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Integration Framework for School Districts (v2, NIRN-aligned) | Michigan Virtual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Michigan Virtual brand palette — michiganvirtual.org/brand */
+  --paper:#f3fafc;        /* White Teal */
+  --card:#ffffff;
+  --ink:#091d20;          /* Black Teal — default text color */
+  --ink-soft:#6d6e71;     /* Light Gray — ancillary/secondary info */
+  --deep:#093c44;         /* Deep Teal — headings */
+  --dteal:#115e6e;        /* Dark Teal — headings */
+  --line:#C7DEE0;         /* Bright Teal */
+  --line-soft:#dfeaec;
+  --green:#b5cd34;        /* Green — accent/divider only, never text */
+  --cta:#f7941e;          /* Orange — call-to-action */
+  --s1:#a84c2a; --s1-soft:#fff4e7; --s1-line:#e4b782;  /* A11y Orange / White Orange / Pale Orange */
+  --s2:#6a7f17; --s2-soft:#f3f6e0; --s2-line:#d6ddb0;  /* A11y Green + tints */
+  --s3:#115e6e; --s3-soft:#e2eef1; --s3-line:#a8ccd4;  /* Dark Teal + tints */
+  --s4:#091d20; --s4-soft:#e0e7e8; --s4-line:#C7DEE0;  /* Black Teal + tints */
+  --s0:#6d6e71; --s0-soft:#ececed;
+  --link:#a84c2a;         /* A11y Orange for 4.5:1 body-text contrast */
+  --focus:#f7941e;
+  --disp:"IBM Plex Serif", Garamond, "Noto Serif", Times, serif;
+  --body:"Figtree", Roboto, "Noto Sans", Helvetica, "Aptos", sans-serif;
+  --mono:"Figtree", Roboto, "Noto Sans", Helvetica, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:var(--deep)}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+
+/* ---------- brand bar ---------- */
+.brandbar{background:#fff;border-bottom:1px solid var(--line)}
+.brandbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px}
+.brandbar img{height:46px;width:auto;display:block}
+.brandbar .bb-right{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--dteal);text-align:right}
+
+/* ---------- header ---------- */
+header.site{background:var(--deep);color:#ffffff;padding:44px 0 40px;border-bottom:6px solid var(--green)}
+header.site .eyebrow{color:#C7DEE0;margin-bottom:14px}
+header.site h1{font-family:var(--disp);font-weight:700;font-size:clamp(28px,4.6vw,46px);line-height:1.08;letter-spacing:-.01em;max-width:19ch}
+header.site h1 em{font-style:normal;color:var(--cta)}
+header.site p.lede{margin-top:16px;max-width:62ch;color:#C7DEE0;font-size:16.5px}
+.supersede{margin-top:20px;display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:#ffffff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.22);padding:7px 12px;border-radius:4px}
+nav.jump{background:var(--ink);padding:0}
+nav.jump .wrap{display:flex;flex-wrap:wrap;gap:0}
+nav.jump a{color:#C8D4CD;text-decoration:none;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:11px 14px;border-right:1px solid rgba(255,255,255,.08)}
+nav.jump a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+/* ---------- sections ---------- */
+section{padding:52px 0}
+section + section{border-top:1px solid var(--line)}
+h2.sec{font-family:var(--disp);font-weight:700;font-size:clamp(23px,3.2vw,32px);letter-spacing:-.01em;margin:6px 0 10px;color:var(--deep)}
+p.sub{color:var(--ink-soft);max-width:68ch;margin-bottom:8px}
+
+/* ---------- cycle dial ---------- */
+.cycle-grid{display:grid;grid-template-columns:360px 1fr;gap:36px;align-items:start;margin-top:26px}
+@media(max-width:820px){.cycle-grid{grid-template-columns:1fr}}
+.dial-box{position:relative}
+.dial-box svg{width:100%;height:auto;display:block}
+.dial-arc{cursor:pointer;transition:opacity .18s,stroke-width .18s}
+.dial-arc:hover{opacity:.85}
+.dial-arc.dim{opacity:.28}
+.renew-arc{pointer-events:none}
+.dial-center-num{font-family:var(--mono);font-size:12px;letter-spacing:.14em;fill:var(--ink-soft)}
+.dial-center-name{font-family:var(--disp);font-weight:700;font-size:24px;fill:var(--ink)}
+.dial-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;font-weight:600;fill:var(--ink-soft);text-transform:uppercase}
+.stage-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+@media(max-width:480px){.stage-btns{grid-template-columns:repeat(2,1fr)}}
+.stage-btn{border:1.5px solid var(--line);background:var(--card);border-radius:6px;padding:9px 6px;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.05em;font-weight:600;color:var(--ink-soft)}
+.stage-btn .num{display:block;font-size:15px;margin-bottom:2px}
+.stage-btn[aria-pressed="true"]{color:#fff;border-color:transparent}
+.stage-btn[data-s="0"][aria-pressed="true"]{background:var(--s1)}
+.stage-btn[data-s="1"][aria-pressed="true"]{background:var(--s2)}
+.stage-btn[data-s="2"][aria-pressed="true"]{background:var(--s3)}
+.stage-btn[data-s="3"][aria-pressed="true"]{background:var(--s4)}
+.stage-panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 26px 22px;border-top:5px solid var(--pc,var(--s1))}
+.stage-panel .eyebrow{color:var(--ink-soft)}
+.stage-panel h3{font-family:var(--disp);font-size:26px;font-weight:700;margin:6px 0 4px;color:var(--deep)}
+.stage-panel p.tag{font-size:16px;color:var(--ink-soft);font-style:italic;margin-bottom:14px}
+.stage-panel .replaces{font-family:var(--mono);font-size:11px;letter-spacing:.05em;padding:5px 9px;border-radius:4px;background:var(--s0-soft);color:var(--ink-soft);display:inline-block;margin-bottom:14px}
+.stage-panel ul{list-style:none;margin-top:4px}
+.stage-panel ul li{padding:7px 0 7px 24px;position:relative;border-top:1px dashed var(--line-soft);font-size:14.5px}
+.stage-panel ul li::before{content:"→";position:absolute;left:0;font-family:var(--mono);color:var(--pc,var(--s1))}
+.gate{margin-top:16px;padding:12px 14px;border-radius:6px;background:var(--s0-soft);font-size:13.5px;color:var(--ink-soft)}
+.gate strong{color:var(--ink)}
+
+/* ---------- stakeholder lens ---------- */
+.lens-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.lens{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 15px;font-size:13.5px;font-weight:600;color:var(--ink-soft)}
+.lens[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.lens-note{margin-top:12px;font-size:13.5px;color:var(--ink-soft);font-style:italic;min-height:20px}
+
+/* ---------- matrix ---------- */
+.driver-key{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 6px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.driver-key span{display:inline-flex;align-items:center;gap:6px}
+.dk{width:10px;height:10px;border-radius:2px;display:inline-block}
+.dk.L{background:var(--s4)} .dk.O{background:var(--s2)} .dk.C{background:var(--s1)}
+.domain{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:14px;overflow:hidden}
+.domain.filtered-out{opacity:.38}
+.dom-head{width:100%;display:flex;align-items:center;gap:14px;padding:16px 18px;background:none;border:none;text-align:left}
+.dom-head:hover{background:var(--paper)}
+.dom-driver{width:12px;align-self:stretch;border-radius:3px;flex:none}
+.dom-driver.L{background:var(--s4)} .dom-driver.O{background:var(--s2)} .dom-driver.C{background:var(--s1)}
+.dom-title{flex:1}
+.dom-title h3{font-family:var(--disp);font-size:18.5px;font-weight:700;line-height:1.2;color:var(--dteal)}
+.dom-title .meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:3px}
+.dom-status{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:5px 10px;border-radius:999px;background:var(--s0-soft);color:var(--ink-soft);flex:none}
+.dom-status.set-0{background:var(--s1);color:#fff}
+.dom-status.set-1{background:var(--s2);color:#fff}
+.dom-status.set-2{background:var(--s3);color:#fff}
+.dom-status.set-3{background:var(--s4);color:#fff}
+.chev{flex:none;font-family:var(--mono);color:var(--ink-soft);transition:transform .18s}
+.domain.open .chev{transform:rotate(90deg)}
+.dom-body{display:none;padding:0 18px 18px}
+.domain.open .dom-body{display:block}
+.newflag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;background:var(--s1);color:#fff;border-radius:3px;padding:2px 6px;margin-left:8px;vertical-align:2px}
+.cells{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:920px){.cells{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.cells{grid-template-columns:1fr}}
+.cell{border:1px solid var(--line-soft);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px;background:#FDFEFD}
+.cell.hot{box-shadow:0 0 0 2.5px var(--hotc, var(--s1));border-color:transparent}
+.cell .chead{display:flex;justify-content:space-between;align-items:center}
+.cell .cnum{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:4px;color:#fff}
+.cell.st0 .cnum{background:var(--s1)} .cell.st1 .cnum{background:var(--s2)}
+.cell.st2 .cnum{background:var(--s3)} .cell.st3 .cnum{background:var(--s4)}
+.cell p.desc{font-size:13.5px;line-height:1.5}
+.cell .ev{border-top:1px dashed var(--line-soft);padding-top:9px}
+.cell .ev .evt{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px}
+.cell .ev li{font-size:12.5px;color:var(--ink-soft);list-style:none;padding:2px 0 2px 14px;position:relative}
+.cell .ev li::before{content:"▪";position:absolute;left:0;font-size:9px;top:5px}
+.cell.st0 .ev li::before{color:var(--s1)} .cell.st1 .ev li::before{color:var(--s2)}
+.cell.st2 .ev li::before{color:var(--s3)} .cell.st3 .ev li::before{color:var(--s4)}
+.sk-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto}
+.sk{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;border:1px solid var(--line);border-radius:3px;padding:2px 6px;color:var(--ink-soft);background:var(--paper)}
+.sk.lit{background:var(--ink);border-color:var(--ink);color:#fff}
+.here{display:flex;align-items:center;gap:7px;border-top:1px solid var(--line-soft);padding-top:9px;font-size:12.5px;color:var(--ink-soft)}
+.here input{width:16px;height:16px;accent-color:var(--s4)}
+
+/* ---------- profile ---------- */
+.profile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px;margin-top:22px}
+.pbar-row{display:grid;grid-template-columns:230px 1fr;gap:12px;align-items:center;padding:6px 0;border-top:1px dashed var(--line-soft)}
+@media(max-width:640px){.pbar-row{grid-template-columns:1fr}}
+.pbar-row .plabel{font-size:13px;font-weight:600}
+.ptrack{background:var(--s0-soft);border-radius:4px;height:18px;position:relative;overflow:hidden}
+.pfill{height:100%;border-radius:4px;transition:width .35s}
+.pfill.v0{background:var(--s0);width:3%}
+.pfill.v1{background:var(--s1);width:25%}
+.pfill.v2{background:var(--s2);width:50%}
+.pfill.v3{background:var(--s3);width:75%}
+.pfill.v4{background:var(--s4);width:100%}
+.pactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.pbtn{border:1.5px solid var(--cta);background:var(--cta);color:var(--ink);border-radius:6px;padding:10px 18px;font-size:13.5px;font-weight:600}
+.pbtn:hover{background:var(--s1);border-color:var(--s1);color:#fff}
+.pbtn.ghost{background:none;color:var(--ink);border-color:var(--ink)}
+.pbtn.ghost:hover{background:var(--ink);color:#fff}
+.pfocus{margin-top:16px;padding:14px 16px;border-left:4px solid var(--s1);background:var(--s1-soft);font-size:14px;border-radius:0 6px 6px 0}
+.pnote{margin-top:12px;font-size:12.5px;color:var(--ink-soft)}
+
+/* ---------- drivers ---------- */
+.drv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+@media(max-width:760px){.drv-grid{grid-template-columns:1fr}}
+.drv{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;border-top:5px solid var(--s2)}
+.drv.L{border-top-color:var(--s4)} .drv.C{border-top-color:var(--s1)}
+.drv h3{font-family:var(--disp);font-size:18px;margin-bottom:6px;color:var(--dteal)}
+.drv p{font-size:13.5px;color:var(--ink-soft)}
+.drv ul{margin-top:10px}
+.drv li{font-size:13px;list-style:none;padding:4px 0 4px 16px;position:relative;color:var(--ink-soft)}
+.drv li::before{content:"·";position:absolute;left:2px;font-weight:700;color:var(--ink)}
+
+/* ---------- changelog ---------- */
+.chg{width:100%;border-collapse:collapse;margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13.5px}
+.chg th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;text-align:left;padding:12px 14px;background:var(--ink);color:#DCE6E0;font-weight:600}
+.chg td{padding:12px 14px;border-top:1px solid var(--line-soft);vertical-align:top}
+.chg td:first-child{font-weight:600;width:26%}
+.chg tr td:nth-child(2){color:var(--ink-soft)}
+@media(max-width:700px){.chg thead{display:none}.chg td{display:block;width:100%!important}.chg td:first-child{background:var(--paper)}}
+
+/* ---------- resources ---------- */
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px}
+@media(max-width:760px){.res-grid{grid-template-columns:1fr}}
+.res{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+.res h3{font-family:var(--disp);font-size:16.5px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--green);color:var(--dteal)}
+.res li{list-style:none;padding:6px 0;font-size:13.5px;border-top:1px dashed var(--line-soft)}
+.res li:first-of-type{border-top:none}
+.res li span{display:block;font-size:12px;color:var(--ink-soft)}
+
+.attrib{background:#fff;border-top:4px solid var(--green);margin-top:40px;padding:28px 0}
+.attrib .wrap{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.attrib img{height:54px;width:auto;flex:none}
+.attrib p{font-size:13px;color:var(--ink-soft);max-width:74ch}
+footer.site{background:var(--deep);color:#C7DEE0;padding:30px 0;font-size:13px}
+footer.site .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media print{
+  nav.jump,.stage-btns,.lens-row,.pactions,.dial-box{display:none}
+  .brandbar{border-bottom:2px solid var(--green)}
+  body{background:#fff}
+  .domain .dom-body{display:block!important}
+  section{padding:20px 0}
+}
+</style>
+</head>
+<body>
+
+<div class="brandbar">
+  <div class="wrap">
+    <a href="https://michiganvirtual.org/" aria-label="Michigan Virtual home">
+      <img src="https://michiganvirtual.org/legacy-wordpress/uploads/2019/09/michigan-virtual-logo-horizontal-transparent.png"
+           alt="Michigan Virtual logo" width="180" height="46" loading="eager">
+    </a>
+    <div class="bb-right">Learning &amp; Research Institute<br>AI Lab</div>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <div class="eyebrow">District Planning Instrument · v2.0 · July 2026 · NIRN-Aligned</div>
+    <h1>AI Integration Framework <em>for School Districts</em></h1>
+    <p class="lede">A stage-based, cyclical implementation framework built on the National Implementation Research Network (NIRN) active implementation stages — with the Installation stage the 2023 rubric skipped, measurable evidence for every cell, and every stakeholder group treated as a partner rather than an audience.</p>
+    <span class="supersede">SUPERSEDES: AI Integration Framework for School Districts (Michigan Virtual, July 2023) — see “What changed &amp; why” below</span>
+  </div>
+</header>
+
+<nav class="jump" aria-label="Section navigation">
+  <div class="wrap">
+    <a href="#cycle">The Cycle</a>
+    <a href="#matrix">Domain Matrix</a>
+    <a href="#profile">Self-Assessment</a>
+    <a href="#drivers">Drivers</a>
+    <a href="#changed">What Changed</a>
+    <a href="#resources">Resources</a>
+  </div>
+</nav>
+
+<section id="cycle">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--s1)">01 · The implementation cycle</div>
+    <h2 class="sec">Four stages. No finish line.</h2>
+    <p class="sub">Implementation science is clear: districts don’t “arrive” at innovation — they move through stages over 2–4 years, and then the cycle restarts when the technology, the law, or the evidence changes. Select a stage to see what it demands and what gate you must pass before moving on. AI has changed materially roughly every six months since 2023; a linear rubric can’t survive that. A cycle can.</p>
+    <div class="cycle-grid">
+      <div>
+        <div class="dial-box" id="dialBox"></div>
+        <div class="stage-btns" role="group" aria-label="Choose a stage">
+          <button class="stage-btn" data-s="0" aria-pressed="true"><span class="num">1</span>Exploration</button>
+          <button class="stage-btn" data-s="1" aria-pressed="false"><span class="num">2</span>Installation</button>
+          <button class="stage-btn" data-s="2" aria-pressed="false"><span class="num">3</span>Initial Impl.</button>
+          <button class="stage-btn" data-s="3" aria-pressed="false"><span class="num">4</span>Full Impl.</button>
+        </div>
+      </div>
+      <div class="stage-panel" id="stagePanel"></div>
+    </div>
+  </div>
+</section>
+
+<section id="matrix">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--dteal)">02 · The domain matrix</div>
+    <h2 class="sec">Eleven domains × four stages</h2>
+    <p class="sub">The 2023 framework had eight rows; three critical domains were missing entirely and one (“Outreach”) needed rebuilding from scratch. Open a domain to see its full progression, the evidence you should demand at each stage, and who owns the work. Use the stakeholder lens to see any group’s footprint across the system — then mark “We are here” in each domain to build your district profile below.</p>
+    <div class="lens-row" id="lensRow" role="group" aria-label="Filter by stakeholder"></div>
+    <div class="lens-note" id="lensNote"></div>
+    <div class="driver-key">
+      <span><i class="dk L"></i> Leadership driver</span>
+      <span><i class="dk O"></i> Organization driver</span>
+      <span><i class="dk C"></i> Competency driver</span>
+      <span style="opacity:.75">(NIRN’s three implementation drivers — see §04)</span>
+    </div>
+    <div id="matrixMount"></div>
+  </div>
+</section>
+
+<section id="profile">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--dteal)">03 · Your district profile</div>
+    <h2 class="sec">Where are you, honestly?</h2>
+    <p class="sub">As you mark “We are here” inside each domain above, this profile builds itself. Expect a jagged line — districts are almost never at the same stage in every domain, and pretending otherwise is how installation gets skipped.</p>
+    <div class="profile">
+      <div id="profileBars"></div>
+      <div class="pfocus" id="profileFocus">Mark your current stage in at least one domain above to generate guidance.</div>
+      <div class="pactions">
+        <button class="pbtn" id="btnCopy">Copy profile summary</button>
+        <button class="pbtn ghost" id="btnPrint">Print / save as PDF</button>
+        <button class="pbtn ghost" id="btnReset">Reset assessment</button>
+      </div>
+      <p class="pnote">This page keeps your selections in memory only — nothing is stored or transmitted. Copy or print your profile before closing the tab.</p>
+    </div>
+  </div>
+</section>
+
+<section id="drivers">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--dteal)">04 · Implementation drivers</div>
+    <h2 class="sec">What actually moves the stages</h2>
+    <p class="sub">NIRN’s research on why implementations succeed or fail identifies three interdependent driver categories. The 2023 framework implicitly assumed these would take care of themselves. They don’t — they are the work. Every domain above is tagged with its dominant driver.</p>
+    <div class="drv-grid">
+      <div class="drv C">
+        <h3>Competency drivers</h3>
+        <p>Build staff capacity to use AI well — before and during use, never after.</p>
+        <ul>
+          <li>Selection: who pilots first, and why</li>
+          <li>Training: role-specific, not one-off webinars</li>
+          <li>Coaching: job-embedded cycles during first use</li>
+          <li>Fidelity: practice rubrics, not seat time</li>
+        </ul>
+      </div>
+      <div class="drv">
+        <h3>Organization drivers</h3>
+        <p>Build systems that make good practice easy and unsafe practice hard.</p>
+        <ul>
+          <li>Data systems that inform decisions (usage, outcomes, equity)</li>
+          <li>Facilitative administration: barriers removed, time protected</li>
+          <li>Systems intervention: vendors, contracts, state &amp; federal alignment</li>
+        </ul>
+      </div>
+      <div class="drv L">
+        <h3>Leadership drivers</h3>
+        <p>Match the leadership style to the problem in front of you.</p>
+        <ul>
+          <li>Technical leadership for clear problems (provisioning, DPAs)</li>
+          <li>Adaptive leadership for contested ones (integrity, trust, job fears)</li>
+          <li>Visible modeling: leaders disclose their own AI use</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="changed">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--s1)">05 · Version history</div>
+    <h2 class="sec">What changed from the 2023 framework — and why</h2>
+    <p class="sub">Version control is itself an implementation practice. Here is the honest accounting of what the July 2023 rubric got wrong, what merely aged out, and what this version does about it.</p>
+    <table class="chg">
+      <thead><tr><th>2023 framework</th><th>What broke</th><th>v2 response</th></tr></thead>
+      <tbody id="chgBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="resources">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--dteal)">06 · Linked resources</div>
+    <h2 class="sec">Go deeper</h2>
+    <p class="sub">Current as of July 2026. Anything on this list can age out — which is exactly why domain 11 exists.</p>
+    <div class="res-grid" id="resGrid"></div>
+  </div>
+</section>
+
+<aside class="attrib" aria-label="Publisher attribution">
+  <div class="wrap">
+    <a href="https://michiganvirtual.org/research" aria-label="Michigan Virtual Learning Research Institute">
+      <img src="https://pub-4ca1463cfd8d49b6b4f0a4909920741d.r2.dev/legacy-wordpress/uploads/2019/10/MVLRI-Logo.svg"
+           alt="Michigan Virtual Learning Research Institute logo" width="160" height="54" loading="lazy">
+    </a>
+    <p><sup>1</sup> This framework is a publication of the <strong>AI Lab</strong> at the <a href="https://michiganvirtual.org/research">Michigan Virtual Learning Research Institute (MVLRI)</a> — Michigan Virtual&rsquo;s learning and research institute. It revises and extends the <em>AI Integration Framework for School Districts</em> (Michigan Virtual, July 2023). Explore the AI Lab&rsquo;s frameworks, planning guides, and research at <a href="https://michiganvirtual.org/ai">michiganvirtual.org/ai</a>.</p>
+  </div>
+</aside>
+
+<footer class="site">
+  <div class="wrap">
+    <div>AI Integration Framework for School Districts · v2.0 · NIRN-aligned · July 2026<br>Michigan Virtual · Learning &amp; Research Institute AI Lab · Lansing, Michigan</div>
+    <div>Review trigger: any new state statute, federal action,<br>major model capability shift, or 12 months — whichever comes first.</div>
+  </div>
+</footer>
+<script>
+/* ============ DATA ============ */
+const STAGES=[
+ {id:0,key:"st0",name:"Exploration",num:"Stage 1 of 4",color:"#a84c2a",
+  tag:"Decide whether — and what — before deciding how.",
+  replaces:"Absorbs the 2023 “Investigating” column",
+  desc:"The district assesses need, fit, and feasibility. A cross-role team (including teachers, students, and families) studies what AI can and cannot do for the district’s existing priorities, examines current state and federal guidance, and makes an explicit, documented adoption decision — including the option of “not this, not yet.”",
+  moves:["Charter an AI task force with student and family seats — not just administrators","Inventory where AI is already in the building (embedded features, staff shadow use)","Run a needs assessment tied to the strategic plan, not to the technology","Review state guidance and federal policy before drafting anything local","End with a written go / no-go / not-yet decision for each candidate use"],
+  gate:"<strong>Gate to Installation:</strong> a documented decision, a named implementation team with real authority, and leadership commitment of time and budget. No decision memo, no next stage."},
+ {id:1,key:"st1",name:"Installation",num:"Stage 2 of 4",color:"#6a7f17",
+  tag:"Build everything the first day of use will depend on.",
+  replaces:"NEW — the column the 2023 framework skipped entirely",
+  desc:"The stage between deciding and doing. Policies are adopted, data privacy agreements signed, tools configured and age-gated, staff trained, coaches prepared, communication drafted, and incident procedures rehearsed — all before a single student touches an approved tool. Skipping this stage is the single most common cause of failed edtech implementations.",
+  moves:["Board adopts responsible-use policy; handbooks updated before launch, not after","Execute DPAs and privacy vetting for every approved tool — including embedded AI","Train the pilot cohort and their coaches first; protect the time in the calendar","Configure SSO, rostering, age gates, and monitoring; rehearse breach and misuse response","Prepare family-facing transparency pages in plain language, translated"],
+  gate:"<strong>Gate to Initial Implementation:</strong> policy adopted, contracts signed, pilot staff trained, supports scheduled. If any of these is missing, you are still installing — no matter what the calendar says."},
+ {id:2,key:"st2",name:"Initial Implementation",num:"Stage 3 of 4",color:"#115e6e",
+  tag:"First real use. Expect the dip; support through it.",
+  replaces:"Sharpens the 2023 “Implementing” column",
+  desc:"Pilot classrooms and offices use AI under real conditions with intensive coaching and rapid-cycle improvement. Performance often dips before it improves — implementation science calls this the “awkward stage.” The district’s job is to gather practice data, fix what breaks quickly, and resist both premature scaling and premature abandonment.",
+  moves:["Run job-embedded coaching cycles alongside first use — training never precedes support by months","Collect usage, fidelity, and outcome data from day one; share findings including failures","Handle the first integrity and privacy incidents by the documented procedure, then revise it","Hold structured feedback loops with students, staff, and families each cycle","Make explicit go / adjust / stop decisions at each improvement cycle"],
+  gate:"<strong>Gate to Full Implementation:</strong> evidence that the practice works in your context, refined procedures, and a scaling plan with named supports — not just enthusiasm from the pilot group."},
+ {id:3,key:"st3",name:"Full Implementation",num:"Stage 4 of 4",color:"#091d20",
+  tag:"Ordinary, monitored, sustained — and scheduled for renewal.",
+  replaces:"Replaces the 2023 “Innovating” column — and then loops",
+  desc:"Half or more of intended users work with AI skillfully and with fidelity; the practice is embedded in hiring, induction, budgeting, and evaluation. Crucially, this is not an end state. An annual renewal review — new statutes, new model capabilities, new evidence, new community needs — feeds directly back into Exploration. The framework is a cycle, not a ladder.",
+  moves:["Monitor outcomes disaggregated by student group; publish an annual public report","Document where AI is deliberately not used, and why — restraint is a competency","Sustain through turnover: induction modules, teacher-leader ladders, multi-year budgets","Run the annual renewal review; sunset tools and practices that no longer earn their place","Version this framework itself — v2 should expect a v3"],
+  gate:"<strong>Renewal loop:</strong> any new state statute, federal action, major capability shift, or 12 months elapsed triggers a scoped return to Exploration for the affected domains."}
+];
+
+const SK={st:"Students",te:"Teachers",fa:"Families",ad:"Administrators",bo:"Board",su:"Support staff",co:"Community"};
+
+const LENSNOTES={
+ all:"",
+ st:"Students appear in 9 of 11 domains — in the 2023 framework they appeared in one row, as recipients. Highlighted cells name students as owners or partners in the work.",
+ te:"Teachers carry the competency drivers. Notice how much of their work lands in Installation — the stage the old framework didn’t have.",
+ fa:"Families were an “Outreach” audience in 2023. Here they hold advisory seats, consent workflows, transparency pages, and co-governance roles.",
+ ad:"Administrators own gates and barriers. Their most important verb in this framework is “remove.”",
+ bo:"The board’s work is concentrated early: adoption decisions, policy, budget lines — then annual public reporting and renewal review.",
+ su:"Counselors, paras, office and IT staff were invisible in the 2023 framework. They run incident response, helpdesks, accessibility, and wellbeing protocols.",
+ co:"Community partners — employers, libraries, higher ed — move from newsletter recipients to MOU-holding collaborators and renewal voices."
+};
+
+const DOMAINS=[
+ {id:"lead",name:"Leadership, Vision & Governance",driver:"L",isNew:false,note:"Expanded from “Leadership & Vision” — adds governance structure",
+  cells:[
+   {d:"Leadership studies the AI landscape and charters a cross-role task force — teachers, students, families, support staff, board liaison — to assess need and fit against the strategic plan and current state guidance.",
+    ev:["Task force charter with student & family seats","Needs assessment tied to strategic priorities","Written go / no-go decision memo"],sk:["ad","bo","te","st","fa"]},
+   {d:"The board adopts a vision; an implementation team is named with real authority, protected time, and a funded budget line. Decision rights and success metrics are defined before launch.",
+    ev:["Board minutes adopting AI vision","Named implementation lead with FTE time","Funded multi-year budget line"],sk:["bo","ad"]},
+   {d:"Leaders actively clear barriers as pilots launch: they meet on an implementation cadence, model transparent AI use themselves, and shield pilot staff from initiative overload.",
+    ev:["Biweekly implementation team minutes","Barrier log with resolution dates","Leader communications disclosing own AI use"],sk:["ad","te","su"]},
+   {d:"AI governance is embedded in the strategic plan and district improvement cycles across all buildings, survives leadership turnover, and runs an annual renewal review that can reopen any domain.",
+    ev:["Strategic plan integration","Annual board renewal review on calendar","Succession & sustainability plan"],sk:["bo","ad","co"]}]},
+ {id:"policy",name:"Policy, Legal & Responsible Use",driver:"L",isNew:false,note:"Expanded from “Policy, Ethical & Legal Considerations”",
+  cells:[
+   {d:"The district audits existing policy — acceptable use, academic integrity, records retention, staff conduct — against AI realities, with counsel review of FERPA, COPPA, IDEA, and fast-moving state and federal action.",
+    ev:["Policy gap analysis","Legal counsel consultation record","Crosswalk to current state guidance"],sk:["bo","ad"]},
+   {d:"The board adopts a responsible-use policy covering staff and students: disclosure norms, an approved-tool process, age-appropriate access, and a rehearsed incident procedure for misuse — including AI-generated harassment and deepfakes.",
+    ev:["Board-approved responsible-use policy","Tool approval workflow live","Deepfake/misuse incident procedure rehearsed"],sk:["bo","ad","te","st","fa"]},
+   {d:"Policy meets reality: early cases are handled by the documented procedure, ambiguities get public FAQ answers, and the first amendment cycle happens within months, not years.",
+    ev:["Incident log with dispositions","Living FAQ with dated updates","First policy revision adopted"],sk:["ad","te","su","st"]},
+   {d:"Policy runs on an annual review cycle tracking new statutes and federal shifts. Students and staff can state the norms in their own words; compliance is monitored, not assumed.",
+    ev:["Annual policy review calendar","Stakeholder norm-awareness data","Compliance audit results"],sk:["bo","ad","st","te"]}]},
+ {id:"privacy",name:"Data Privacy, Security & Vendor Management",driver:"O",isNew:true,note:"NEW domain — buried inside “Policy” in 2023, now the highest-liability area",
+  cells:[
+   {d:"The district inventories every place AI already touches its data — including AI features embedded in existing platforms and staff “shadow use” of consumer tools — and studies recent K-12 breach and vendor incidents.",
+    ev:["AI & data-flow inventory (incl. embedded AI)","Shadow-use staff survey","Risk register reviewed with counsel"],sk:["ad","su"]},
+   {d:"Every approved tool has an executed data privacy agreement; procurement rubrics add AI clauses (training on student data, retention, model access); security controls and age gates are configured; breach response is updated and rehearsed for AI vendors.",
+    ev:["Signed DPAs on file for all approved tools","Procurement rubric with AI clauses","Tabletop breach exercise completed"],sk:["ad","su","bo"]},
+   {d:"A public approved-tool list is live; new requests are triaged on a published timeline; monitoring flags unapproved tools; early privacy incidents produce postmortems and fixes, not cover.",
+    ev:["Public approved-tool list","Request turnaround within SLA","Incident postmortems with actions"],sk:["su","ad","te","fa"]},
+   {d:"Vendors are re-vetted annually; data minimization is practiced; privacy posture is reported to the board; contracts are renegotiated or sunset as models and terms change.",
+    ev:["Annual vendor re-vetting record","Board privacy & security report","Documented tool sunsets"],sk:["bo","ad","su","co"]}]},
+ {id:"instr",name:"Instruction & Learning Design",driver:"C",isNew:false,note:"Expanded from “Instructional Framework”",
+  cells:[
+   {d:"Educators examine where AI could serve existing instructional priorities — not where instruction could be bent to fit the technology — and review the evidence base honestly, including where it is thin.",
+    ev:["Use-case shortlist tied to instructional framework","Teacher interest & concern inventory","Honest evidence review (incl. gaps)"],sk:["te","ad","st"]},
+   {d:"A pilot cohort is selected and trained; exemplar lessons and classroom AI norms (when, how, with what disclosure) are built; coaching assignments are made — all before student use begins.",
+    ev:["Pilot roster with selection rationale","Exemplar lesson bank","Classroom AI norms posted & taught"],sk:["te","st","ad"]},
+   {d:"Pilot classrooms use AI with live coaching; walkthrough and practice data are gathered; iteration happens weekly; the expected implementation dip is supported, not punished in evaluations.",
+    ev:["Coaching logs","Walkthrough / fidelity data","Documented iterations with rationale"],sk:["te","st","su"]},
+   {d:"Effective practices scale district-wide. AI-integrated instruction is ordinary where it demonstrably adds value — and deliberately absent where it doesn’t, with that restraint documented and taught.",
+    ev:["Scale metrics by building","“Where we don’t use AI” guidance","Teacher-led practice sharing"],sk:["te","st","ad","fa"]}]},
+ {id:"assess",name:"Assessment & Academic Integrity",driver:"C",isNew:false,note:"Rebuilt from “Learning Assessments” — integrity was absent in 2023",
+  cells:[
+   {d:"Faculty confront the real problem: generative AI has broken the take-home essay as evidence of learning, and AI-detection tools are too unreliable and too biased against multilingual writers to carry disciplinary weight.",
+    ev:["Integrity incident baseline data","Detector-limitations brief circulated","Assessment redesign options memo"],sk:["te","ad","st"]},
+   {d:"The integrity code is rewritten around disclosure and process evidence rather than detection; assignment-level AI-use expectations (from “none” to “required”) are adopted; redesign PD is delivered before the first redesigned task ships.",
+    ev:["Revised integrity code (disclosure-based)","Assignment-level AI-use labels in use","Redesigned exemplar tasks"],sk:["te","st","fa","ad"]},
+   {d:"Redesigned assessments run: process portfolios, oral defenses, in-class drafting, AI-transparent tasks. Integrity cases follow due process; teachers calibrate judgments together.",
+    ev:["Portfolio / defense pilots running","Case data with due-process record","Calibration meeting notes"],sk:["te","st","su"]},
+   {d:"The assessment system values process, originality, and AI-augmented competence; students co-own the integrity culture; validity and equity of results are checked, not assumed.",
+    ev:["Student voice in integrity governance","Validity checks on new formats","Equity disaggregation of outcomes"],sk:["st","te","ad","fa"]}]},
+ {id:"lit",name:"AI Literacy (Students, Staff & Families)",driver:"C",isNew:true,note:"NEW domain — now a federal priority; a 2023 afterthought",
+  cells:[
+   {d:"The district maps where AI concepts already live in its curriculum, selects a competency framework, and baselines what students, staff, and families actually know and believe about AI.",
+    ev:["Curriculum map of existing AI touchpoints","Framework selected (e.g., AI4K12 / UNESCO)","Baseline literacy survey"],sk:["te","st","ad","fa"]},
+   {d:"A K-12 AI-literacy scope and sequence is adopted — concepts, ethics, prompting, verification, bias, and deepfake/media literacy — with teacher materials ready and family sessions designed before units launch.",
+    ev:["Adopted K-12 scope & sequence","Teacher toolkit distributed","Family literacy session plan"],sk:["te","ad","fa","st"]},
+   {d:"First units are taught across grade bands; student work is reviewed; misconceptions are catalogued and fed back into materials; family nights run in every attendance area.",
+    ev:["Taught-unit tracker","Student artifact review","Family session attendance & feedback"],sk:["te","st","fa"]},
+   {d:"Every graduate meets AI-literacy competencies including bias, provenance, and societal impact; staff literacy is built into induction; community offerings run on an ongoing calendar.",
+    ev:["Competency attainment data","Induction literacy module","Community course calendar"],sk:["st","te","co","fa"]}]},
+ {id:"pl",name:"Professional Learning & Coaching",driver:"C",isNew:false,note:"Expanded from “Professional Learning” — adds coaching, the missing driver",
+  cells:[
+   {d:"The district assesses educator readiness, trust, and needs — surveys consistently rank PD, technical training, and privacy guidance as the top asks — and inventories internal coaching capacity honestly.",
+    ev:["Staff needs & trust survey","Coach capacity inventory","PL landscape scan beyond webinars"],sk:["te","su","ad"]},
+   {d:"Role-specific PL sequences are built for teachers, paras, counselors, office staff, and leaders; coaches are trained first; PL time is protected on the actual calendar; practice rubrics exist before anyone is observed against them.",
+    ev:["Differentiated PL plan by role","Trained coach cadre","Calendared, protected PL time"],sk:["te","su","ad"]},
+   {d:"Job-embedded coaching cycles run alongside first classroom and office use; practice feedback flows back into PL design within weeks. Training precedes and accompanies use — it never trails it.",
+    ev:["Coaching cycle completion data","PL revisions traced to coaching data","Peer observation structures live"],sk:["te","su"]},
+   {d:"A tiered system — novice to teacher-leader — sustains itself through micro-credentials and internal expertise; PL effectiveness is measured by classroom practice change, not seat time.",
+    ev:["Teacher-leader ladder / credentials","Practice-change evidence","Internal PL led by staff"],sk:["te","ad","su"]}]},
+ {id:"student",name:"Student Use, Voice & Wellbeing",driver:"C",isNew:false,note:"Rebuilt from “Student Use” — adds voice, safety, and wellbeing",
+  cells:[
+   {d:"The district listens before it decides: student panels and surveys surface actual AI use — including companion chatbots and social tools — while staff audit age restrictions and assess wellbeing risks like parasocial reliance and deepfake harassment.",
+    ev:["Student listening data","Age-gate & terms audit","Wellbeing risk brief"],sk:["st","su","ad","fa"]},
+   {d:"Age-appropriate access is configured by grade band; a student advisory holds a real seat on the task force; counselor protocols for AI-related harm — including nonconsensual imagery response duties — are readied before launch.",
+    ev:["Access matrix by grade band","Student advisory minutes","Counselor AI-harm protocol"],sk:["st","su","ad","fa"]},
+   {d:"Students use approved tools with scaffolds and clear disclosure norms; report channels are live and trusted; wellbeing signals are monitored; student feedback visibly changes decisions.",
+    ev:["Usage & report-channel data","Documented student-driven changes","Wellbeing monitoring in place"],sk:["st","te","su"]},
+   {d:"Students are co-designers and peer educators with documented proficiency — critically evaluating AI output, provenance, and societal impact — and wellbeing measures hold steady or improve.",
+    ev:["Student-led projects & peer teaching","Proficiency portfolios","Wellbeing trend data"],sk:["st","te","co"]}]},
+ {id:"family",name:"Family & Community Partnership",driver:"O",isNew:false,note:"Rebuilt from “Outreach” — from messaging an audience to sharing power",
+  cells:[
+   {d:"Two-way listening replaces announcement: multilingual family focus groups surface hopes and concerns honestly, and a community asset scan maps employers, libraries, and higher-ed partners.",
+    ev:["Focus-group findings published","Materials in family languages","Community asset map"],sk:["fa","co","ad"]},
+   {d:"A family advisory role is created with real standing; consent and opt-out workflows are built where required; partnership MOUs are drafted; the communication plan launches with feedback channels, not just a newsletter.",
+    ev:["Family advisory seated","Consent / opt-out workflow live","Partner MOUs drafted"],sk:["fa","co","bo","ad"]},
+   {d:"Families receive plain-language transparency pages showing exactly which tools touch their children’s data and learning; questions get public answers; partners host first student experiences.",
+    ev:["Per-tool transparency pages","Public Q&A record","Partner-hosted events"],sk:["fa","co","st","su"]},
+   {d:"Families and partners hold seats in renewal decisions; community AI programs — adult literacy, career pathways — run on their own momentum; trust is measured and reported, not asserted.",
+    ev:["Co-governance seats in renewal review","Community program enrollment","Trust survey trends"],sk:["fa","co","bo","st"]}]},
+ {id:"ops",name:"Operations & Infrastructure",driver:"O",isNew:false,note:"Expanded from “Business & Technology Operations” — adds human oversight & cost realism",
+  cells:[
+   {d:"IT audits infrastructure, identity, filtering, and devices for AI readiness; inventories AI already embedded in existing platforms; and models total cost of ownership — subscriptions, support, and growth — over multiple years.",
+    ev:["Infrastructure readiness audit","Embedded-AI platform inventory","Multi-year TCO model"],sk:["su","ad","bo"]},
+   {d:"Provisioning, SSO, and rostering are configured; administrative workflow pilots (communications, translation, scheduling) are mapped with explicit human review points; the helpdesk is trained before tickets arrive.",
+    ev:["SSO / rostering configured","Workflow maps with human-in-the-loop points","Helpdesk runbook & training"],sk:["su","ad"]},
+   {d:"Operational pilots run with human oversight of every consequential output; time-savings and error data are collected honestly; supports are adjusted from evidence, not anecdote.",
+    ev:["Pilot efficiency & error metrics","Oversight logs for consequential outputs","Iteration record"],sk:["su","ad"]},
+   {d:"AI-assisted operations are standard where they demonstrably save time without harming accuracy or equity; automation boundaries are documented in a “human decision required” registry; budgets are sustainable multi-year.",
+    ev:["Efficiency reporting to board","Human-decision-required registry","Multi-year sustainable budget"],sk:["su","ad","bo"]}]},
+ {id:"eval",name:"Evaluation & Continuous Improvement",driver:"O",isNew:true,note:"NEW domain — the engine that makes the cycle turn",
+  cells:[
+   {d:"Success is defined before adoption: a theory of action names what should improve — learning, workload, equity, safety — and baseline data is captured so future claims can be tested.",
+    ev:["Written theory of action","Measure set selected","Baseline data captured"],sk:["ad","bo","te"]},
+   {d:"Data collection is instrumented — usage, fidelity, outcomes — improvement cycles (plan-do-study-act) are scheduled onto real calendars, and every metric has a disaggregation plan by student group.",
+    ev:["Dashboards built & tested","PDSA cycle calendar","Equity disaggregation plan"],sk:["ad","su","te"]},
+   {d:"Rapid improvement cycles run on real data; findings — including failures — are shared openly; go / adjust / stop decisions are actually honored, including at least one documented discontinuation.",
+    ev:["PDSA records","Public findings incl. failures","A documented stop decision"],sk:["ad","te","st","fa"]},
+   {d:"Evaluation powers the renewal loop: an annual public report on outcomes, costs, and equity feeds re-exploration of tools, laws, and needs — and this framework itself is versioned on that evidence.",
+    ev:["Annual public outcomes report","Renewal decisions on record","Framework changelog (v2 → v3)"],sk:["bo","ad","co","fa","st"]}]}
+];
+
+const CHANGELOG=[
+ ["Three columns: Investigating → Implementing → Innovating","No Installation stage — the framework jumps from planning to classroom use with no stage for adopting policy, signing DPAs, training staff, and configuring systems first. That gap is where edtech implementations die.","Four NIRN stages — Exploration, Installation, Initial Implementation, Full Implementation — each with an explicit gate you must pass to advance."],
+ ["Linear maturity rubric; “Innovating” as destination","AI capability has shifted materially roughly every six months since 2023 (multimodal models, embedded copilots, agents). Any district that “arrived” in 2023 was out of date by 2024.","A cycle: Full Implementation triggers an annual renewal review that reopens Exploration for affected domains. The framework versions itself."],
+ ["Descriptors with no measurable indicators — the note even asks leaders to invent their own measures","A rubric you can’t score is a poster, not an instrument. Two leaders reading the same cell would place their district in different columns.","Every one of the 44 cells carries concrete evidence (“look-fors”): board minutes, signed DPAs, coaching logs, disaggregated outcome data."],
+ ["Privacy folded into one policy row","Since 2023: a massive K-12 student-data vendor breach, expanded COPPA obligations, embedded AI shipping inside district platforms by default, and staff shadow use of consumer tools.","Domain 3 — Data Privacy, Security & Vendor Management — with vendor re-vetting, DPAs, breach rehearsal, and shadow-use auditing as first-class work."],
+ ["“Learning Assessments” imagines AI enhancing quizzes; academic integrity unmentioned","The single loudest AI issue in schools since 2023 — and detection tools proved unreliable and biased against multilingual writers, ending detection-first enforcement as a defensible strategy.","Domain 5 rebuilds assessment around disclosure, process evidence, and redesign — with due process and student co-ownership of integrity culture."],
+ ["No AI literacy curriculum row","AI literacy became a national K-12 priority via the April 2025 executive order and federal grant priorities; multiple states now require district AI policies; competency frameworks (AI4K12, UNESCO) matured.","Domain 6 makes K-12 AI literacy — including deepfake and provenance literacy — a curricular obligation for students, staff, and families."],
+ ["“Outreach”: stakeholders as an audience to message","One-way communication reads as decided-without-us and fuels the trust gap that surveys keep finding between administrators and everyone else.","Domain 9: family advisory seats, consent workflows, per-tool transparency pages, and co-governance in renewal decisions."],
+ ["Students appear in one row, as recipients developing “awareness”","Students are the heaviest AI users in the building, facing companion-chatbot and deepfake-harassment risks the 2023 framework never imagined.","Students hold task-force seats and appear across 9 of 11 domains — with voice, wellbeing protocols, and peer-educator roles."],
+ ["Support staff invisible; no coaching anywhere","NIRN’s competency research is blunt: training without job-embedded coaching doesn’t change practice. Counselors, paras, office and IT staff do much of the real work.","Coaching is a named driver; support staff carry tagged responsibilities in 8 domains, from helpdesk runbooks to AI-harm counseling protocols."],
+ ["No evaluation function at all","No mechanism existed to learn whether any of it worked — or to notice the framework itself aging out. Which is how a “regularly updated” 2023 PDF was still circulating three years later.","Domain 11: theory of action, baselines, PDSA cycles, published failures, sunset decisions, and a changelog for the framework itself."]
+];
+
+const RESOURCES=[
+ {h:"Start here (Michigan)",items:[
+  ["MDE × Michigan Virtual statewide AI guidance (June 2026)","The state framework + district playbook that formally supersede the 2023 landscape","https://www.michigan.gov/mde/news-and-information/press-releases/2026/06/25/mde-partners-with-mv-on-statewide-ai-guidance-for-k-12-schools"],
+  ["Michigan Virtual AI Lab","Framework updates, planning guide, sample staff guidance, research snapshots","https://michiganvirtual.org/ai"],
+  ["Planning Guide for AI: A Framework for School Districts","Domain-by-domain companion with guiding questions","https://michiganvirtual.org/resources/guides/ai-guide/"]]},
+ {h:"Implementation science",items:[
+  ["NIRN Active Implementation Hub (UNC)","The stages, drivers, and improvement cycles this framework is built on","https://implementation.fpg.unc.edu/"],
+  ["Implementation stages overview","Why Installation exists and why skipping it fails","https://implementation.fpg.unc.edu/implementation-practice/stages/"]]},
+ {h:"Federal policy (verify currency)",items:[
+  ["Executive order: Advancing AI Education for American Youth (Apr 2025) — summary","Task force, teacher-training grant priority, Presidential AI Challenge","https://www.hklaw.com/en/insights/publications/2025/04/executive-order-advancing-ai-education-for-american-youth"],
+  ["U.S. Dept. of Ed Dear Colleague Letter on AI & grant funds (Jul 2025) — summary","Existing formula & discretionary funds may support AI initiatives","https://www.f3law.com/insights/fed-govt-provides-guidance-on-ai-funding/"],
+  ["Student Privacy at ED (PTAC)","FERPA guidance, vendor agreement resources","https://studentprivacy.ed.gov/"]]},
+ {h:"Frameworks, safety & literacy",items:[
+  ["TeachAI Toolkit","Sample policies and guidance drafted with state & global partners","https://www.teachai.org/toolkit"],
+  ["AI4K12 — Five Big Ideas in AI","K-12 AI literacy grade-band progressions","https://ai4k12.org/"],
+  ["UNESCO AI competency framework for students","International reference points for K-12 student AI competencies","https://unesdoc.unesco.org/ark:/48223/pf0000391105"],
+  ["UNESCO AI competency framework for teachers","Knowledge, skills, and values educators need in the age of AI","https://www.unesco.org/en/articles/ai-competency-framework-teachers"],
+  ["CoSN AI resources","CTO-level guidance on infrastructure, security, procurement","https://www.cosn.org/ai/"],
+  ["K12 SIX","K-12-specific cybersecurity threat intelligence & breach lessons","https://www.k12six.org/"]]}
+];
+</script>
+<script>
+/* ============ RENDER: cycle dial ============ */
+const NS="http://www.w3.org/2000/svg";
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function arcPath(cx,cy,r,a0,a1){const[x0,y0]=polar(cx,cy,r,a0),[x1,y1]=polar(cx,cy,r,a1);const large=(a1-a0)%360>180?1:0;return `M ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1}`;}
+let currentStage=0;
+function buildDial(){
+  const box=document.getElementById("dialBox");
+  const svg=document.createElementNS(NS,"svg");
+  svg.setAttribute("viewBox","0 0 360 360");
+  svg.setAttribute("role","img");
+  svg.setAttribute("aria-label","Implementation cycle diagram: four stages — Exploration, Installation, Initial Implementation, and Full Implementation — flow clockwise, with a dashed renewal arrow returning from Full Implementation to Exploration.");
+  const svgTitle=document.createElementNS(NS,"title");
+  svgTitle.textContent="The implementation cycle: Exploration, Installation, Initial Implementation, Full Implementation, then renew and re-explore.";
+  svg.appendChild(svgTitle);
+  const cx=180,cy=180,r=120;
+  const defs=document.createElementNS(NS,"defs");
+  defs.innerHTML=STAGES.map((s,i)=>`<marker id="arw${i}" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="20" markerHeight="20" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${s.color}"/></marker>`).join("")
+   +`<marker id="arwR" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d6e71"/></marker>`;
+  svg.appendChild(defs);
+  /* renew return arc (outer, dashed, across the top gap) */
+  const renew=document.createElementNS(NS,"path");
+  renew.setAttribute("d",arcPath(cx,cy,r+34,-26,24));
+  renew.setAttribute("fill","none");renew.setAttribute("stroke","#6d6e71");
+  renew.setAttribute("stroke-width","2.5");renew.setAttribute("stroke-dasharray","5 6");
+  renew.setAttribute("marker-end","url(#arwR)");renew.setAttribute("class","renew-arc");
+  svg.appendChild(renew);
+  const rl=document.createElementNS(NS,"text");
+  rl.setAttribute("x",cx);rl.setAttribute("y",18);rl.setAttribute("text-anchor","middle");
+  rl.setAttribute("class","dial-label");rl.textContent="renew → re-explore";
+  svg.appendChild(rl);
+  /* four stage arcs, clockwise from top */
+  const labels=["Explore","Install","Initial","Full"];
+  const labelPos=[[318,120],[318,258],[42,258],[42,120]];
+  STAGES.forEach((s,i)=>{
+    const a0=i*90+7, a1=(i+1)*90-13;
+    const p=document.createElementNS(NS,"path");
+    p.setAttribute("d",arcPath(cx,cy,r,a0,a1));
+    p.setAttribute("fill","none");p.setAttribute("stroke",s.color);
+    p.setAttribute("stroke-width","36");p.setAttribute("stroke-linecap","butt");
+    p.setAttribute("marker-end",`url(#arw${i})`);
+    p.setAttribute("class","dial-arc");p.dataset.s=i;
+    p.addEventListener("click",()=>setStage(i));
+    svg.appendChild(p);
+    const[nx,ny]=polar(cx,cy,r,(a0+a1)/2);
+    const n=document.createElementNS(NS,"text");
+    n.setAttribute("x",nx);n.setAttribute("y",ny+5);n.setAttribute("text-anchor","middle");
+    n.setAttribute("fill","#fff");n.setAttribute("style","font-family:var(--mono);font-size:15px;font-weight:600");
+    n.setAttribute("pointer-events","none");n.textContent=i+1;
+    svg.appendChild(n);
+    const t=document.createElementNS(NS,"text");
+    t.setAttribute("x",labelPos[i][0]);t.setAttribute("y",labelPos[i][1]);
+    t.setAttribute("text-anchor",i<2?"start":"end");
+    t.setAttribute("class","dial-label");t.textContent=labels[i];
+    svg.appendChild(t);
+  });
+  const c1=document.createElementNS(NS,"text");
+  c1.setAttribute("x",cx);c1.setAttribute("y",cy-14);c1.setAttribute("text-anchor","middle");
+  c1.setAttribute("class","dial-center-num");c1.id="dialNum";
+  svg.appendChild(c1);
+  const c2=document.createElementNS(NS,"text");
+  c2.setAttribute("x",cx);c2.setAttribute("y",cy+16);c2.setAttribute("text-anchor","middle");
+  c2.setAttribute("class","dial-center-name");c2.id="dialName";
+  svg.appendChild(c2);
+  box.appendChild(svg);
+}
+function setStage(i){
+  currentStage=i;const s=STAGES[i];
+  document.querySelectorAll(".dial-arc").forEach(a=>a.classList.toggle("dim",+a.dataset.s!==i));
+  document.getElementById("dialNum").textContent=s.num.toUpperCase();
+  document.getElementById("dialName").textContent=s.name;
+  document.querySelectorAll(".stage-btn").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.s===i?"true":"false"));
+  const p=document.getElementById("stagePanel");
+  p.style.borderTopColor=s.color;
+  p.innerHTML=`<div class="eyebrow">${s.num}</div><h3>${s.name}</h3>
+    <p class="tag">${s.tag}</p>
+    <span class="replaces">${s.replaces}</span>
+    <p style="font-size:14.5px;margin-bottom:6px">${s.desc}</p>
+    <ul>${s.moves.map(m=>`<li>${m}</li>`).join("")}</ul>
+    <div class="gate">${s.gate}</div>`;
+  p.style.setProperty("--pc",s.color);
+  document.querySelectorAll(".cell").forEach(c=>{
+    c.classList.toggle("hot",c.dataset.stage==i && lensActive==="all");
+    c.style.setProperty("--hotc",s.color);
+  });
+}
+document.querySelectorAll(".stage-btn").forEach(b=>b.addEventListener("click",()=>setStage(+b.dataset.s)));
+
+/* ============ RENDER: stakeholder lens ============ */
+let lensActive="all";
+function buildLens(){
+  const row=document.getElementById("lensRow");
+  const mk=(key,label)=>{const b=document.createElement("button");b.className="lens";b.dataset.k=key;b.textContent=label;b.setAttribute("aria-pressed",key==="all"?"true":"false");b.addEventListener("click",()=>setLens(key));return b;};
+  row.appendChild(mk("all","All stakeholders"));
+  Object.entries(SK).forEach(([k,v])=>row.appendChild(mk(k,v)));
+}
+function setLens(k){
+  lensActive=k;
+  document.querySelectorAll(".lens").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k?"true":"false"));
+  document.getElementById("lensNote").textContent=LENSNOTES[k]||"";
+  document.querySelectorAll(".domain").forEach(dom=>{
+    const has=k==="all"||dom.dataset.sk.split(",").includes(k);
+    dom.classList.toggle("filtered-out",!has);
+  });
+  document.querySelectorAll(".cell").forEach(c=>{
+    const cellHas=k!=="all"&&c.dataset.sk.split(",").includes(k);
+    c.classList.toggle("hot",cellHas||(k==="all"&&+c.dataset.stage===currentStage));
+    if(cellHas)c.style.setProperty("--hotc","#091d20");
+    else c.style.setProperty("--hotc",STAGES[currentStage].color);
+  });
+  document.querySelectorAll(".sk").forEach(t=>t.classList.toggle("lit",t.dataset.k===k));
+}
+
+/* ============ RENDER: matrix ============ */
+const DRIVERNAMES={L:"Leadership driver",O:"Organization driver",C:"Competency driver"};
+const assessment={};
+function buildMatrix(){
+  const mount=document.getElementById("matrixMount");
+  DOMAINS.forEach((dom,di)=>{
+    const allSk=[...new Set(dom.cells.flatMap(c=>c.sk))].join(",");
+    const el=document.createElement("div");
+    el.className="domain";el.dataset.sk=allSk;el.id="dom-"+dom.id;
+    const cellsHtml=dom.cells.map((c,ci)=>`
+      <div class="cell st${ci}" data-stage="${ci}" data-sk="${c.sk.join(',')}">
+        <div class="chead"><span class="cnum">${ci+1} · ${STAGES[ci].name}</span></div>
+        <p class="desc">${c.d}</p>
+        <div class="ev"><div class="evt">Evidence to demand</div><ul>${c.ev.map(e=>`<li>${e}</li>`).join("")}</ul></div>
+        <div class="sk-row">${c.sk.map(s=>`<span class="sk" data-k="${s}">${SK[s]}</span>`).join("")}</div>
+        <label class="here"><input type="radio" name="assess-${dom.id}" value="${ci+1}"> We are here</label>
+      </div>`).join("");
+    el.innerHTML=`
+      <button class="dom-head" aria-expanded="false" aria-controls="body-${dom.id}">
+        <span class="dom-driver ${dom.driver}" title="${DRIVERNAMES[dom.driver]}"></span>
+        <span class="dom-title">
+          <h3>${String(di+1).padStart(2,"0")} · ${dom.name}${dom.isNew?'<span class="newflag">NEW IN V2</span>':""}</h3>
+          <span class="meta">${DRIVERNAMES[dom.driver]} · ${dom.note}</span>
+        </span>
+        <span class="dom-status" id="status-${dom.id}">not yet assessed</span>
+        <span class="chev">›</span>
+      </button>
+      <div class="dom-body" id="body-${dom.id}">
+        <div class="cells">${cellsHtml}</div>
+        <label class="here" style="margin-top:10px;border-top:none"><input type="radio" name="assess-${dom.id}" value="0"> Not started in this domain</label>
+      </div>`;
+    mount.appendChild(el);
+    el.querySelector(".dom-head").addEventListener("click",()=>{
+      const open=el.classList.toggle("open");
+      el.querySelector(".dom-head").setAttribute("aria-expanded",open?"true":"false");
+    });
+    el.querySelectorAll(`input[name="assess-${dom.id}"]`).forEach(inp=>{
+      inp.addEventListener("change",()=>{assessment[dom.id]=+inp.value;renderProfile();});
+    });
+  });
+}
+
+/* ============ RENDER: profile ============ */
+const STAGENAMES=["Not started","Exploration","Installation","Initial Implementation","Full Implementation"];
+function renderProfile(){
+  const bars=document.getElementById("profileBars");
+  bars.innerHTML=DOMAINS.map((dom,di)=>{
+    const v=assessment[dom.id];
+    const set=v===undefined?"":`v${v}`;
+    const label=v===undefined?"—":STAGENAMES[v];
+    const st=document.getElementById("status-"+dom.id);
+    if(st){ if(v===undefined){st.textContent="not yet assessed";st.className="dom-status";}
+      else{st.textContent=label;st.className="dom-status"+(v>0?" set-"+(v-1):"");}}
+    return `<div class="pbar-row"><div class="plabel">${String(di+1).padStart(2,"0")} · ${dom.name}</div>
+      <div class="ptrack">${v===undefined?"":`<div class="pfill ${set}"></div>`}</div></div>`;
+  }).join("");
+  const done=Object.keys(assessment).length;
+  const focus=document.getElementById("profileFocus");
+  if(done===0){focus.innerHTML="Mark your current stage in at least one domain above to generate guidance.";return;}
+  const vals=Object.entries(assessment);
+  const min=Math.min(...vals.map(v=>v[1]));
+  const lows=vals.filter(v=>v[1]===min).map(v=>DOMAINS.find(d=>d.id===v[0]).name);
+  const spread=Math.max(...vals.map(v=>v[1]))-min;
+  let msg=`<strong>${done} of ${DOMAINS.length} domains assessed.</strong> `;
+  msg+=`Your earliest-stage work is in: <strong>${lows.join(", ")}</strong> (${STAGENAMES[min]}). `;
+  msg+= min<=1 ? "Resist the pull to scale other domains past these — Exploration and Installation debts always come due during Initial Implementation. "
+       : "Protect coaching and improvement-cycle time as you move toward full implementation. ";
+  if(spread>=2) msg+="Your profile is jagged (a spread of "+spread+" stages) — that’s normal, but it means district-wide messaging like “we’ve implemented AI” is not yet true, and saying it will cost you trust.";
+  focus.innerHTML=msg;
+}
+document.getElementById("btnPrint").addEventListener("click",()=>window.print());
+document.getElementById("btnReset").addEventListener("click",()=>{
+  for(const k in assessment)delete assessment[k];
+  document.querySelectorAll('.here input').forEach(i=>i.checked=false);
+  renderProfile();
+});
+document.getElementById("btnCopy").addEventListener("click",async()=>{
+  const lines=["AI Integration Framework v2 — District Profile ("+new Date().toLocaleDateString()+")",""];
+  DOMAINS.forEach((dom,di)=>{const v=assessment[dom.id];
+    lines.push(`${String(di+1).padStart(2,"0")} ${dom.name}: ${v===undefined?"not assessed":STAGENAMES[v]}`);});
+  lines.push("","Stages: Exploration → Installation → Initial Implementation → Full Implementation → renew.");
+  try{await navigator.clipboard.writeText(lines.join("\n"));
+    document.getElementById("btnCopy").textContent="Copied ✓";
+    setTimeout(()=>document.getElementById("btnCopy").textContent="Copy profile summary",1600);}
+  catch(e){alert(lines.join("\n"));}
+});
+
+/* ============ RENDER: changelog & resources ============ */
+document.getElementById("chgBody").innerHTML=CHANGELOG.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("");
+document.getElementById("resGrid").innerHTML=RESOURCES.map(g=>`<div class="res"><h3>${g.h}</h3><ul>${g.items.map(i=>`<li><a href="${i[2]}" target="_blank" rel="noopener">${i[0]}</a><span>${i[1]}</span></li>`).join("")}</ul></div>`).join("");
+
+/* ============ INIT ============ */
+buildDial();buildLens();buildMatrix();renderProfile();setStage(0);
+/* open the first domain so the matrix pattern is visible on arrival */
+document.querySelector(".domain").classList.add("open");
+document.querySelector(".domain .dom-head").setAttribute("aria-expanded","true");
+</script>
+</body>
+</html>
